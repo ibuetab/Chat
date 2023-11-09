@@ -1,6 +1,7 @@
 package Entidades;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Usuario {
 	
@@ -24,6 +25,7 @@ public class Usuario {
 	}
 	
 	//Sobrecarga
+	
 	//Permite valores por defecto
 	//Van llamando sucesivamente al constructor principal
 	
@@ -40,6 +42,11 @@ public class Usuario {
 	//Permite que no sea obligatorio pasarle ningún valor y pone los mismos por defecto
 	public Usuario() {
 		this(null, "Anónimo", LocalDateTime.now());
+	}
+	
+	//Constructor de copia
+	public Usuario(Usuario usuario) {
+		this(usuario.getId(), usuario.getNombreUsuario(), usuario.getFechaUltimaConexion() );
 	}
 	
 	//---------------------------------------------------------------------------------------------------------
@@ -69,27 +76,50 @@ public class Usuario {
 	}
 	
 	public void setNombreUsuario(String nombreUsuario) {
-		if(nombreUsuario == null) {
+		if(nombreUsuario == null || nombreUsuario.length() == 0  ||nombreUsuario.trim().length()==0) {
 			throw new RuntimeException("El nombre no puede estar vacío");
 		}
-		this.nombreUsuario = nombreUsuario;
+		this.nombreUsuario = nombreUsuario.trim();
 	}
 	public void setFechaUltimaConexion(LocalDateTime fechaUltimaConexion) {
-		if(fechaUltimaConexion.isAfter(LocalDateTime.now()) || fechaUltimaConexion == null) {
+		if( fechaUltimaConexion == null || fechaUltimaConexion.isAfter(LocalDateTime.now())) {
 			throw new RuntimeException("La fecha no puede ser posterior a la fecha actual ni estar vacía");
 		}
 		this.fechaUltimaConexion = fechaUltimaConexion;
 	}
+	
+	
+	//---------------------------------------------------------------------------------------------------------
+	//---------------------------------------------------------------------------------------------------------
 
 	@Override
 	public String toString() {
 		return "Usuario [id=" + id + ", nombreUsuario=" + nombreUsuario + ", fechaUltimaConexion=" + fechaUltimaConexion
 				+ "]";
 	}
+
 	
 	
 	//---------------------------------------------------------------------------------------------------------
 	//---------------------------------------------------------------------------------------------------------
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(fechaUltimaConexion, id, nombreUsuario);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		return Objects.equals(fechaUltimaConexion, other.fechaUltimaConexion) && Objects.equals(id, other.id)
+				&& Objects.equals(nombreUsuario, other.nombreUsuario);
+	}
 	
 	
 }
